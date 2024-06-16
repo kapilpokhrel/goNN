@@ -6,11 +6,18 @@ import (
 	"gonum.org/v1/gonum/mat"
 )
 
-type Tanh struct {
+type TanhLayer struct {
 	Input *mat.Dense
 }
 
-func (layer *Tanh) Forward(input *mat.Dense) *mat.Dense {
+func Tanh(insize int) *TanhLayer {
+	var layer TanhLayer
+	layer.Input = mat.NewDense(1, insize, nil)
+
+	return &layer
+}
+
+func (layer *TanhLayer) Forward(input *mat.Dense) *mat.Dense {
 	layer.Input = input
 
 	var result mat.Dense
@@ -20,7 +27,7 @@ func (layer *Tanh) Forward(input *mat.Dense) *mat.Dense {
 	return &result
 }
 
-func (layer *Tanh) Backward(output_grad *mat.Dense) *mat.Dense {
+func (layer *TanhLayer) Backward(output_grad *mat.Dense, rate float64) *mat.Dense {
 	/*
 		dL/dinput = dL/dy * dy/dinput
 

@@ -1,6 +1,8 @@
 package layer
 
 import (
+	"math/rand"
+
 	"gonum.org/v1/gonum/mat"
 )
 
@@ -8,6 +10,24 @@ type DenseLayer struct {
 	Weights *mat.Dense
 	Biases  *mat.Dense
 	Input   *mat.Dense
+}
+
+func Dense(insize, outsize int) *DenseLayer {
+	var layer DenseLayer
+	randdata := make([]float64, outsize)
+	for i := range randdata {
+		randdata[i] = rand.NormFloat64()
+	}
+	layer.Biases = mat.NewDense(1, outsize, randdata)
+
+	randdata = make([]float64, insize*outsize)
+	for i := range randdata {
+		randdata[i] = rand.NormFloat64()
+	}
+	layer.Weights = mat.NewDense(insize, outsize, randdata)
+	layer.Input = mat.NewDense(1, insize, nil)
+
+	return &layer
 }
 
 func (layer *DenseLayer) Forward(input *mat.Dense) *mat.Dense {
