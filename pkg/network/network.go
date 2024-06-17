@@ -28,7 +28,8 @@ func (network *Network) Predict(input *mat.Dense) *mat.Dense {
 
 func (network *Network) BackProp(out_grad *mat.Dense, rate float64) {
 	in_grad := out_grad
-	for _, layer := range network.Layers {
+	for i := len(network.Layers) - 1; i >= 0; i-- {
+		layer := network.Layers[i]
 		in_grad = layer.Backward(in_grad, rate)
 	}
 }
@@ -43,5 +44,6 @@ func (network *Network) Train(inputs []*mat.Dense, outputs []*mat.Dense, epoch i
 			out_grad := network.LossPrime(outputs[j], result)
 			network.BackProp(out_grad, rate)
 		}
+		fmt.Printf("Epoch = (%d/%d), error = %f\n", i+1, epoch, err/float64(len(inputs)))
 	}
 }
