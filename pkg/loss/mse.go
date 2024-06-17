@@ -12,6 +12,8 @@ func MSE(true_val *mat.Dense, pred_val *mat.Dense) float64 {
 
 	r, c := result.Dims()
 	size := float64(r * c)
+
+	// size can't be zero, as 0 lenght matrix isn't allowed in gonum
 	return mat.Sum(&result) / size
 }
 func MSE_Prime(true_val *mat.Dense, pred_val *mat.Dense) *mat.Dense {
