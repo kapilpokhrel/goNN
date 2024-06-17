@@ -1,6 +1,7 @@
 package layer
 
 import (
+	"errors"
 	"math/rand"
 
 	"gonum.org/v1/gonum/mat"
@@ -30,7 +31,7 @@ func Dense(insize, outsize int) *DenseLayer {
 	return &layer
 }
 
-func (layer *DenseLayer) Forward(input *mat.Dense) *mat.Dense {
+func (layer *DenseLayer) Forward(input *mat.Dense) (*mat.Dense, error) {
 	/*
 		This is the method to handle forward progation through the layer.
 		This applies the corresponding weights and biases to its inputs and
@@ -50,13 +51,19 @@ func (layer *DenseLayer) Forward(input *mat.Dense) *mat.Dense {
 							 [w4 w5 w6]
 
 	*/
+	in_w, in_c := input.Dims()
+	w_r, _ := layer.Weights.Dims()
+
+	if in_c != w_r || in_w != 1 {
+		return nil, errors.New("input size is not compataible with this layer")
+	}
 
 	layer.Input = input
 
 	var output mat.Dense
 	output.Mul(layer.Input, layer.Weights)
 	output.Add(&output, layer.Biases)
-	return &output
+	return &output, nil
 }
 
 func (layer *DenseLayer) Backward(output_grad *mat.Dense, rate float64) *mat.Dense {
@@ -92,7 +99,24 @@ func (layer *DenseLayer) Backward(output_grad *mat.Dense, rate float64) *mat.Den
 		[dL/dw1 dL/dw2 dL/dw3] = [x1] * [dL/dy1 dL/dy2 dL/dy3]
 		[dL/dw4 dL/dw5 dL/dw6]	 [x2]
 
-		Same deduction can be done to find dL/db and dL/dx
+		Same deduction can be done to find dL/db,
+
+		For dL/dx,
+		we can expand it using chain rule as,
+		dL/dx1 = dL/dy1 * dy1/dx1 + dL/dy2 * dy2/dx1 + dL/dy3 * dy3/dx1
+		=> dL/dx1 = dL/dy1 * w1 + dL/dy2 * w2 + dL/dy3 * w3
+		Similarly, dL/dx2 = dL/dy1 * w4 + dL/dy2 * w5 + dL/dy3 * w6
+
+		y1, y2, y3 are all dependent on x1 as
+		y1 = x1 * w1 + x2 * w4 + b1
+		y2 = x1 * w2 + x2 * w5 + b2
+		..
+
+		Expressing above result in matrix,
+		dL/dx = [dL/dy1 dL/dy2 dL/dy3] x [w1 w4]
+							  			 |w2 w5|
+							  			 [w3 w6]
+
 
 	*/
 

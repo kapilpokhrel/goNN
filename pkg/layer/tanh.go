@@ -17,14 +17,14 @@ func Tanh(insize int) *TanhLayer {
 	return &layer
 }
 
-func (layer *TanhLayer) Forward(input *mat.Dense) *mat.Dense {
+func (layer *TanhLayer) Forward(input *mat.Dense) (*mat.Dense, error) {
 	layer.Input = input
 
 	var result mat.Dense
 
 	// result = tanh(input) ; for element in input
 	result.Apply(func(i, j int, v float64) float64 { return math.Tanh(v) }, input)
-	return &result
+	return &result, nil
 }
 
 func (layer *TanhLayer) Backward(output_grad *mat.Dense, rate float64) *mat.Dense {

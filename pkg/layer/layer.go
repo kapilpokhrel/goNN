@@ -5,6 +5,6 @@ import (
 )
 
 type Layer interface {
-	Forward(input *mat.Dense) *mat.Dense
+	Forward(input *mat.Dense) (*mat.Dense, error)
 	Backward(out_grad *mat.Dense, rate float64) *mat.Dense
 }
