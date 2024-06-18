@@ -1,0 +1,21 @@
+{
+    "Layers": [
+        {
+            "biases": "AQAAAEdGQQABAAAAAAAAAAMAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADv4fFa5Puc/L8R48dgEA8Bs6F7xVUzjPw==",
+            "type": "Dense",
+            "weights": "AQAAAEdGQQACAAAAAAAAAAMAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADCXsDN9Idc/R3PBm70T+T/8UKB9QBgIwFicQOdkqPE/F96Wl0Ck+D/oE5QS7BP8vw=="
+        },
+        {
+            "type": "Tanh"
+        },
+        {
+            "biases": "AQAAAEdGQQABAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAMFm7SbDefO/",
+            "type": "Dense",
+            "weights": "AQAAAEdGQQADAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAOfRszPyR+s/I/Z/bBeS9r/pQxNwAm70vw=="
+        },
+        {
+            "type": "Tanh"
+        }
+    ],
+    "Loss": "MSE"
+}

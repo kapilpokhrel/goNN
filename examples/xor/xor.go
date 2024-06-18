@@ -1,6 +1,7 @@
 package xor
 
 import (
+	"errors"
 	"fmt"
 	"math"
 	"os"
@@ -35,21 +36,28 @@ func XOR_net() {
 	outputs[2] = mat.NewDense(1, 1, []float64{1})
 	outputs[3] = mat.NewDense(1, 1, []float64{0})
 
-	layers := []layer.Layer{
-		layer.Dense(2, 3),
-		layer.Tanh(3),
-		layer.Dense(3, 1),
-		layer.Tanh(1),
-	}
+	var xor_network network.Network
+	if _, err := os.Stat("examples/xor/xor_trained.json"); errors.Is(err, os.ErrNotExist) {
+		layers := []layer.Layer{
+			layer.Dense(2, 3),
+			layer.Tanh(3),
+			layer.Dense(3, 1),
+			layer.Tanh(1),
+		}
 
-	network := network.Network{
-		Layers:    layers,
-		Loss:      loss.MSE,
-		LossPrime: loss.MSE_Prime,
-	}
-	network.Train(inputs, outputs, 1000, 0.01)
+		xor_network = network.Network{
+			Layers:    layers,
+			Loss:      loss.MSE,
+			LossPrime: loss.MSE_Prime,
+		}
 
-	fmt.Println("Training Finished!!")
+		xor_network.Train(inputs, outputs, 1000, 0.01)
+
+		xor_network.Save("examples/xor/xor_trained.json")
+		fmt.Println("Training Finished!!")
+	} else {
+		xor_network.Load("examples/xor/xor_trained.json")
+	}
 
 	f, err := os.Create("./examples/xor/xor-boundry.csv")
 	if err != nil {
@@ -59,7 +67,7 @@ func XOR_net() {
 	for _, x := range arange(0., 1., 0.02) {
 		for _, y := range arange(0., 1., 0.02) {
 			input := mat.NewDense(1, 2, []float64{x, y})
-			output := network.Predict(input)
+			output := xor_network.Predict(input)
 			f.WriteString(fmt.Sprintf("%f,%f,%f\n", x, y, output.At(0, 0)))
 		}
 	}
